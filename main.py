@@ -1,14 +1,13 @@
 import sys, pygame, random
 from pygame.math import Vector2
 
-
-
 right = Vector2(1, 0)
 left = Vector2(-1, 0)
 up = Vector2(0, -1)
 down = Vector2(0, 1)
 cellSize = 40
 cellNumber = 20
+buffer = 200
 
 class Snake:
     def __init__(self):
@@ -44,13 +43,14 @@ class Apple:
         self.y = random.randrange(0, cellNumber)
         self.position = Vector2(self.x, self.y) # Use two dimensional vector to establish position on the grid. This will make the code more readable and make this program easier to work with
 
-
-
-
 class Main():
     def __init__(self):
         self.snake = Snake()
         self.food = Apple()
+        self.score = 0
+    
+    def addPoint(self):
+        self.score += 1
     
     def update(self):
         self.snake.moveSnake()
@@ -65,6 +65,7 @@ class Main():
         if self.food.position == self.snake.body[0]:
             self.food.randomize()
             self.snake.addBlock()
+            self.addPoint()
     def checkFail(self):
         if not 0 <= self.snake.body[0].x < cellNumber or not 0 <= self.snake.body[0].y < cellNumber:
             self.gameOver()
@@ -85,19 +86,13 @@ SCREEN_UPDATE = pygame.USEREVENT
 pygame.time.set_timer(SCREEN_UPDATE, 150) # Trigger event every 150 milliseconds
 
 
-screen = pygame.display.set_mode((cellSize * cellNumber, cellSize * cellNumber)) # Establish the height and width of the screen
+screen = pygame.display.set_mode((cellSize * cellNumber, cellSize * cellNumber + buffer)) # Establish the height and width of the screen
 clock = pygame.time.Clock() # Create clock object to limit how fast while loop will run -- this enables the game to run more consistently on different computers
 
 # appleImg = pygame.transform.scale(pygame.image.load('images/apple.png'), (40, 40)).convert_alpha() # Define icon for the apple
 appleImg = pygame.transform.scale(pygame.image.load('images/apple.png'), (40, 40)).convert_alpha()
 
-
-
-
 running = True # Set running = True to create infinite loop to keep program going
-
-
-
 
 while running:
 
@@ -122,6 +117,7 @@ while running:
                 if mainGame.snake.direction != up:
                     mainGame.snake.direction = down
     screen.fill((14, 124, 123)) # Establish the fill color of the background
+    pygame.draw.rect(screen, (100, 100, 100), pygame.Rect(0, cellNumber * cellSize, cellNumber * cellSize, buffer)) # Move this into draw elemeents??
     mainGame.drawElements()
 
     pygame.display.update() #Update display
