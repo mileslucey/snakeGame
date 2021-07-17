@@ -7,7 +7,7 @@ up = Vector2(0, -1)
 down = Vector2(0, 1)
 cellSize = 40
 cellNumber = 20
-buffer = 200
+buffer = 5
 
 class Snake:
     def __init__(self):
@@ -29,23 +29,6 @@ class Snake:
         bodyCopy.insert(0, bodyCopy[0] + self.direction)
         self.body = bodyCopy[:]       
 
-class Score:
-    def __init__(self):
-        self.x = 60
-        self.y = 20
-        self.points = 0
-    def drawScore(self):
-        # display_surface =pygame.display.set_mode(Vector2(self.x, self.y))
-        font = pygame.font.Font('freesansbold.ttf', 10)
-        text = font.render(str(self.points), True, (255, 255, 255))
-        textRect = text.get_rect()
-        # textRect = (self.x // 2, self.y // 2)
-        textRect = Vector2(self.x, self.y)
-        screen.blit(text, textRect)
-    def addPoint(self):
-        self.points += 1
-
-
 class Apple: 
     def __init__(self):
         self.x = random.randrange(0, cellNumber)
@@ -54,15 +37,27 @@ class Apple:
 
     def drawFood(self):
         food = pygame.Rect(int(self.position.x * cellSize), int(self.position.y * cellSize), cellSize, cellSize)
-        # pygame.draw.rect(screen, (126, 166, 140), food)
-        # pygame.draw.rect(screen, (126, 166, 140), appleImg)
         screen.blit(appleImg, food)
             
-    
     def randomize(self):
         self.x = random.randrange(0, cellNumber)
         self.y = random.randrange(0, cellNumber)
         self.position = Vector2(self.x, self.y) # Use two dimensional vector to establish position on the grid. This will make the code more readable and make this program easier to work with
+
+class Score:
+    def __init__(self):
+        self.x = 8
+        self.y = 20
+        self.position = Vector2(self.x, self.y)
+        self.points = 0
+    def drawScore(self):
+        font = pygame.font.Font("freesansbold.ttf", 45)
+        text = font.render("Score:  " + str(self.points), True, (255, 255, 255))
+        textRect = text.get_rect()
+        textRect = Vector2(self.position.x * cellSize, self.position.y * cellSize)
+        screen.blit(text, textRect)
+    def addPoint(self):
+        self.points += 1
 
 class Main():
     def __init__(self):
@@ -97,8 +92,6 @@ class Main():
         pygame.quit()
         sys.exit()
 
-
-
 pygame.init() # Initialize the pygame library
 
 mainGame = Main()
@@ -106,10 +99,9 @@ mainGame = Main()
 SCREEN_UPDATE = pygame.USEREVENT
 pygame.time.set_timer(SCREEN_UPDATE, 150) # Trigger event every 150 milliseconds
 
-screen = pygame.display.set_mode((cellSize * cellNumber, cellSize * cellNumber + buffer)) # Establish the height and width of the screen
+screen = pygame.display.set_mode((cellSize * cellNumber, cellSize * cellNumber + (buffer * cellSize))) # Establish the height and width of the screen
 clock = pygame.time.Clock() # Create clock object to limit how fast while loop will run -- this enables the game to run more consistently on different computers
 
-# appleImg = pygame.transform.scale(pygame.image.load('images/apple.png'), (40, 40)).convert_alpha() # Define icon for the apple
 appleImg = pygame.transform.scale(pygame.image.load('images/apple.png'), (40, 40)).convert_alpha()
 
 running = True # Set running = True to create infinite loop to keep program going
@@ -136,8 +128,9 @@ while running:
             if event.key == pygame.K_DOWN:
                 if mainGame.snake.direction != up:
                     mainGame.snake.direction = down
+
     screen.fill((14, 124, 123)) # Establish the fill color of the background
-    pygame.draw.rect(screen, (100, 100, 100), pygame.Rect(0, cellNumber * cellSize, cellNumber * cellSize, buffer)) # Move this into draw elemeents??
+    pygame.draw.rect(screen, (100, 100, 100), pygame.Rect(0, cellNumber * cellSize, cellNumber * cellSize, cellSize * buffer)) # Move this into draw elemeents??
     mainGame.drawElements()
 
     pygame.display.update() # Update display
