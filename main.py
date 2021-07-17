@@ -85,7 +85,6 @@ mainGame = Main()
 SCREEN_UPDATE = pygame.USEREVENT
 pygame.time.set_timer(SCREEN_UPDATE, 150) # Trigger event every 150 milliseconds
 
-
 screen = pygame.display.set_mode((cellSize * cellNumber, cellSize * cellNumber + buffer)) # Establish the height and width of the screen
 clock = pygame.time.Clock() # Create clock object to limit how fast while loop will run -- this enables the game to run more consistently on different computers
 
