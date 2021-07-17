@@ -13,18 +13,38 @@ class Snake:
     def __init__(self):
         self.body = [Vector2(5, 10), Vector2(4, 10), Vector2(3, 10)]
         self.direction = right
+
     def drawSnake(self):
         for block in self.body: # Create for loop to draw the snake utilizing two dimensional vectors for readability
             block_rect = pygame.Rect(int(block.x * cellSize), int(block.y * cellSize), cellSize, cellSize)
             pygame.draw.rect(screen, (100, 0, 0), block_rect)
+
     def moveSnake(self):
         bodyCopy = self.body[:-1] 
         bodyCopy.insert(0, bodyCopy[0] + self.direction)
         self.body = bodyCopy[:]
+
     def addBlock(self):
         bodyCopy = self.body[:] 
         bodyCopy.insert(0, bodyCopy[0] + self.direction)
         self.body = bodyCopy[:]       
+
+class Score:
+    def __init__(self):
+        self.x = 60
+        self.y = 20
+        self.points = 0
+    def drawScore(self):
+        # display_surface =pygame.display.set_mode(Vector2(self.x, self.y))
+        font = pygame.font.Font('freesansbold.ttf', 10)
+        text = font.render(str(self.points), True, (255, 255, 255))
+        textRect = text.get_rect()
+        # textRect = (self.x // 2, self.y // 2)
+        textRect = Vector2(self.x, self.y)
+        screen.blit(text, textRect)
+    def addPoint(self):
+        self.points += 1
+
 
 class Apple: 
     def __init__(self):
@@ -37,6 +57,7 @@ class Apple:
         # pygame.draw.rect(screen, (126, 166, 140), food)
         # pygame.draw.rect(screen, (126, 166, 140), appleImg)
         screen.blit(appleImg, food)
+            
     
     def randomize(self):
         self.x = random.randrange(0, cellNumber)
@@ -47,10 +68,7 @@ class Main():
     def __init__(self):
         self.snake = Snake()
         self.food = Apple()
-        self.score = 0
-    
-    def addPoint(self):
-        self.score += 1
+        self.score = Score()
     
     def update(self):
         self.snake.moveSnake()
@@ -60,18 +78,21 @@ class Main():
     def drawElements(self):
         self.food.drawFood()
         self.snake.drawSnake()
+        self.score.drawScore()
     
     def checkCollision(self):
         if self.food.position == self.snake.body[0]:
             self.food.randomize()
             self.snake.addBlock()
-            self.addPoint()
+            self.score.addPoint()
+
     def checkFail(self):
         if not 0 <= self.snake.body[0].x < cellNumber or not 0 <= self.snake.body[0].y < cellNumber:
             self.gameOver()
         for block in self.snake.body[1:]:
             if block == self.snake.body[0]:
                 self.gameOver()
+
     def gameOver(self):
         pygame.quit()
         sys.exit()
@@ -119,5 +140,5 @@ while running:
     pygame.draw.rect(screen, (100, 100, 100), pygame.Rect(0, cellNumber * cellSize, cellNumber * cellSize, buffer)) # Move this into draw elemeents??
     mainGame.drawElements()
 
-    pygame.display.update() #Update display
+    pygame.display.update() # Update display
     clock.tick(60) # Ensures game will never run faster than 60 frames/second
