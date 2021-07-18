@@ -5,11 +5,11 @@ right = Vector2(1, 0)
 left = Vector2(-1, 0)
 up = Vector2(0, -1)
 down = Vector2(0, 1)
-cellSize = 40
+cellSize = 36
 cellNumber = 20
 buffer = 5
 
-class Snake:
+class Snake():
     def __init__(self):
         self.body = [Vector2(5, 10), Vector2(4, 10), Vector2(3, 10)]
         self.direction = right
@@ -29,7 +29,7 @@ class Snake:
         bodyCopy.insert(0, bodyCopy[0] + self.direction)
         self.body = bodyCopy[:]       
 
-class Apple: 
+class Apple(): 
     def __init__(self):
         self.x = random.randrange(0, cellNumber)
         self.y = random.randrange(0, cellNumber)
@@ -44,7 +44,7 @@ class Apple:
         self.y = random.randrange(0, cellNumber)
         self.position = Vector2(self.x, self.y) # Use two dimensional vector to establish position on the grid. This will make the code more readable and make this program easier to work with
 
-class Score:
+class Score():
     def __init__(self):
         self.x = 8
         self.y = 20
@@ -59,7 +59,7 @@ class Score:
     def addPoint(self):
         self.points += 1
 
-class Main():
+class Game():
     def __init__(self):
         self.snake = Snake()
         self.food = Apple()
@@ -94,7 +94,7 @@ class Main():
 
 pygame.init() # Initialize the pygame library
 
-mainGame = Main()
+mainGame = Game()
 
 SCREEN_UPDATE = pygame.USEREVENT
 pygame.time.set_timer(SCREEN_UPDATE, 150) # Trigger event every 150 milliseconds
